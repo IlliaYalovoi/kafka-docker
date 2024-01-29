@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        kafka_version: [2.8.1]
+        scala_version: [2.13]
+
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      KAFKA_VERSION: ${{ matrix.kafka_version }}
+      SCALA_VERSION: ${{ matrix.scala_version }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        run: |
+          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
+      - name: Set up Docker Buildx
+        run: |
+          docker buildx create --use
+
+
+
+      - name: Push Docker Image
+        run: |
+          bash docker_push "${SCALA_VERSION}-${KAFKA_VERSION}"
