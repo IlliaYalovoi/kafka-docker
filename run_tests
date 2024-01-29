@@ -1,0 +1,16 @@
+#!/bin/bash -e
+
+# run test environment
+docker-compose -f test/docker-compose.yml up -d zookeeper kafka_1 kafka_2
+
+sleep 5 # waiting for images to up
+
+cd test
+./verifyImageLabels.sh
+./runAllTests.sh
+
+cd scenarios
+./runJmxScenario.sh
+
+cd ../..
+docker-compose stop

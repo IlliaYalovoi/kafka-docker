@@ -1,11 +1,11 @@
 version: '2'
 services:
   zookeeper:
-    image: wurstmeister/zookeeper
+    image: zookeeper:3.9.1
     ports:
       - "2181"
   kafka:
-    image: wurstmeister/kafka
+    image: krelms/kafka
     ports:
       - "9092"
       - "1099"
@@ -29,7 +29,7 @@ services:
       - $PWD/jmxexporter.yml:/opt/jmx_exporter/config.yml
 
   test:
-    image: wurstmeister/kafka
+    image: krelms/kafka
     environment:
       KAFKA_PORT: 9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
